@@ -15,19 +15,19 @@ export default function App() {
   const { signOut } = useAuth()
   const [posts, setPosts] = useState<Post[]>([])
 
-  const callHello = async () => {
-    await axios.get('http://localhost:8081/hello')
-      .then(res => console.log('res at call fn in client', res.data))
-      .catch(e => console.log('err at callhelo', e));
-  }
-
   const getPosts = async () => {
-    const res = await axios.get('http://localhost:8081/api/posts')
-    setPosts(res.data.posts)
+    try {
+      const res = await axios.get('http://localhost:8081/api/posts');
+      console.log('res::: ', res);
+      
+      setPosts(res.data.posts);
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+      // You could add additional error handling here if needed
+    }
   }
 
   useEffect(()=>{
-    callHello()
     getPosts()
   },[])
 
