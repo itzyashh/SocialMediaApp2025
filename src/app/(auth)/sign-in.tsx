@@ -7,6 +7,7 @@ const SignIn = () => {
     const {signIn} = useAuth()
 
     const [username, setUsername] = useState<string>('')
+    const [password, setPassword] = useState<string>('')
     console.log(username.length)
 
     const handleSignIn = () => {
@@ -23,7 +24,14 @@ const SignIn = () => {
       value={username}
       onChangeText={setUsername}
        />
-       <Button disabled={username.length === 0}
+      <TextInput
+      placeholder='password'
+      className='border w-[80%] rounded-md px-2'
+      value={password}
+      onChangeText={setPassword}
+      secureTextEntry
+       />
+       <Button disabled={username.length === 0 || password.length === 0}
         title='Sign In' onPress={handleSignIn}/>
     
     </View>

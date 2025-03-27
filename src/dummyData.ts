@@ -5,7 +5,7 @@ const dummyPosts: Post[] = [
     author: {
       id: '1',
       name: 'John Doe',
-      handle: '@johndoe',
+      username: '@johndoe',
       avatar:
         'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/zuck.jpeg',
     },
@@ -20,7 +20,7 @@ const dummyPosts: Post[] = [
     author: {
       id: '2',
       name: 'Jane Smith',
-      handle: '@janesmith',
+      username: '@janesmith',
       avatar:
         'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/jeff.jpeg',
     },
@@ -36,7 +36,7 @@ const dummyPosts: Post[] = [
     author: {
       id: '3',
       name: 'Tech News Daily',
-      handle: '@technews',
+      username: '@technews',
       avatar:
         'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/11.png',
     },
@@ -52,7 +52,7 @@ const dummyPosts: Post[] = [
     author: {
       id: '4',
       name: 'Vadim',
-      handle: '@vadim',
+      username: '@vadim',
       avatar:
         'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/vadim.png',
     },

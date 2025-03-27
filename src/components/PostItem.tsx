@@ -21,7 +21,7 @@ const PostItem: FC<PostItemProps> = ({ post }) => {
                 <View className='gap-1 flex-1'>
                     <View className='flex-row gap-2'>
                         <Text className='font-semibold'>{post.author.name}</Text>
-                        <Text className='text-gray-500'>{post.author.handle}</Text>
+                        <Text className='text-gray-500'>{post.author.username}</Text>
                         <Text>•</Text>
                         <Text className='text-gray-500'>{createdAt}</Text>
                     </View>

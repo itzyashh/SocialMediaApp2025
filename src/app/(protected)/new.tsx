@@ -6,6 +6,12 @@ const NewPost = () => {
 
     const [content, setContent] = useState("")
 
+
+
+    const onPost = async () => {
+        //
+    }
+
     return (
         <View>
             <Stack.Screen options={{

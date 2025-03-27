@@ -7,12 +7,14 @@ type Session = {
 }
 
 const AuthContext = createContext<{
-    signIn: (handle: string) => void
+    signIn: (username: string) => void
+    signUp: ({name, username, password}: {name: string, username: string, password: string}) => void
     signOut: () => void
     session?: Session | null
     isLoading: boolean
 }>({
     signIn: () => null,
+    signUp: () => null,
     signOut: () => null,
     session: null,
     isLoading: false
@@ -26,11 +28,11 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
         loadSession()
     },[])
 
-    const signIn = (handle: string) => {
+    const signIn = (username: string) => {
         const session: Session = {
             user: {
                 id: '1',
-                handle,
+                username,
                 name: 'Yash',
                 avatar: ''
             },
@@ -39,6 +41,21 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
         setSession(session)
         saveSession(session)
     }
+
+    const signUp = async ({name, username, password}: {name: string, username: string, password: string}) => {
+        const session: Session = {
+            user: {
+                id: '1',
+                username,
+                name: 'Yash',
+                avatar: ''
+            },
+            accessToken: 'accessToken'
+        }
+        setSession(session)
+        saveSession(session)
+    }
+
     const signOut = () => {
         setSession(null)
         saveSession(null)
@@ -65,7 +82,7 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
     }
 
     return (
-        <AuthContext.Provider value={{ isLoading, signIn, signOut, session }} >
+        <AuthContext.Provider value={{ isLoading, signIn, signOut, session, signUp }} >
             {children}
         </AuthContext.Provider>
     )

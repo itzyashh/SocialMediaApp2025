@@ -1,7 +1,7 @@
 type User = {
     id: string;
     name: string
-    handle: string
+    username: string
     avatar: string
 }
 
