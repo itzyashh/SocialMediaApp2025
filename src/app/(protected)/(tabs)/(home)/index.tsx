@@ -7,17 +7,32 @@ import { Entypo } from '@expo/vector-icons'
 import { Link } from 'expo-router';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
 
 
 export default function App() {
 
-  const { signOut } = useAuth()
+  const { signOut, session } = useAuth()
+  console.log('session::: ', session?.accessToken);
   const [posts, setPosts] = useState<Post[]>([])
+
+  
+
+  const {data} = useQuery({
+    queryKey: ['test'],
+    queryFn: () => {
+      return 'hello world'
+    }
+  })
+
+  console.log(data,'data')
 
   const getPosts = async () => {
     try {
-      const res = await axios.get('http://localhost:8081/api/posts');
+      const res = await axios.get('http://localhost:8081/api/posts',{
+
+      });
       console.log('res::: ', res);
       
       setPosts(res.data.posts);

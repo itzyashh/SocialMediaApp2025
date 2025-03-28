@@ -1,19 +1,24 @@
 import { View, Text, TextInput, Button } from 'react-native'
 import React, { useState } from 'react'
 import { useAuth } from '@/providers/AuthProvider'
+import AxiosIntance from '@/utils/AxiosIntance'
 
 const SignIn = () => {
 
     const {signIn} = useAuth()
 
-    const [username, setUsername] = useState<string>('')
-    const [password, setPassword] = useState<string>('')
+    const [username, setUsername] = useState<string>('itzyashh')
+    const [password, setPassword] = useState<string>('yash@123')
     console.log(username.length)
 
-    const handleSignIn = () => {
-        console.log('button', username)
-        signIn(username)
-    }
+    const handleSignIn = async () => {
+        const res = await AxiosIntance.post('/auth/signin',{
+          username,
+          password
+        }).catch(err=>console.log(err))
+        if (!res || !res.data) return
+        signIn(res.data.user)
+      }
 
   return (
     <View className='flex-1 justify-center items-center gap-4'>

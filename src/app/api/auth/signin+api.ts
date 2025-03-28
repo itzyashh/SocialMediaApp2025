@@ -26,7 +26,8 @@ export const POST = async (req: Request) => {
         }
 
         const accessToken = await jwt.sign({ id: user.id }, process.env.JWT_TOKEN!, { expiresIn: '7d' })
-        return Response.json({ status: "success", accessToken }, { status: 200 })
+        const { password: _, ...userWithoutPassword } = user;
+        return Response.json({ status: "success", user: {...userWithoutPassword, accessToken} }, { status: 200 })
     } catch (error) {
         console.error('Authentication error:', error)
         return Response.json({ status: "error", message: "Internal server error" }, { status: 500 })

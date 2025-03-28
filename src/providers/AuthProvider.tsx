@@ -1,5 +1,7 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from "react"
 import * as SecureStore from 'expo-secure-store';
+import AxiosIntance from "@/utils/AxiosIntance";
+import axios from "axios";
 
 type Session = {
     user: User
@@ -7,7 +9,7 @@ type Session = {
 }
 
 const AuthContext = createContext<{
-    signIn: (username: string) => void
+    signIn: (user: any) => void
     signUp: ({name, username, password}: {name: string, username: string, password: string}) => void
     signOut: () => void
     session?: Session | null
@@ -28,15 +30,11 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
         loadSession()
     },[])
 
-    const signIn = (username: string) => {
+    const signIn = (user: any) => {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${user.accessToken}`
         const session: Session = {
-            user: {
-                id: '1',
-                username,
-                name: 'Yash',
-                avatar: ''
-            },
-            accessToken: 'accessToken'
+            user,
+            accessToken: user.accessToken
         }
         setSession(session)
         saveSession(session)
@@ -72,6 +70,7 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
 
     const loadSession = async () => {
         const session = await SecureStore.getItemAsync('session')
+        axios.defaults.headers.common['Authorization'] = session ? `Bearer ${JSON.parse(session).accessToken}` : ''
         if (session) {
             setSession(JSON.parse(session))
         } else {
