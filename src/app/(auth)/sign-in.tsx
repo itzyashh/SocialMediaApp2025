@@ -1,7 +1,9 @@
-import { View, Text, TextInput, Button } from 'react-native'
+import { View, Text, TextInput, Button, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import { useAuth } from '@/providers/AuthProvider'
 import AxiosIntance from '@/utils/AxiosIntance'
+import { useMutation } from '@tanstack/react-query'
+import { signInRequest } from '@/sevices/authService'
 
 const SignIn = () => {
 
@@ -11,14 +13,18 @@ const SignIn = () => {
     const [password, setPassword] = useState<string>('yash@123')
     console.log(username.length)
 
-    const handleSignIn = async () => {
-        const res = await AxiosIntance.post('/auth/signin',{
-          username,
-          password
-        }).catch(err=>console.log(err))
-        if (!res || !res.data) return
-        signIn(res.data.user)
-      }
+    const {mutate, error, isPending} = useMutation({
+      mutationFn: ({username, password}: {username: string, password: string}) => signInRequest(username, password),
+      onSuccess: signIn
+    })
+
+    const handleSignIn = async () => {  
+      mutate({username, password})
+    }
+
+    if (isPending) {
+      <ActivityIndicator size={'large'} color={'#000'} />
+    }
 
   return (
     <View className='flex-1 justify-center items-center gap-4'>

@@ -2,6 +2,8 @@ import { createContext, PropsWithChildren, useContext, useEffect, useState } fro
 import * as SecureStore from 'expo-secure-store';
 import AxiosIntance from "@/utils/AxiosIntance";
 import axios from "axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { signInRequest } from "@/sevices/authService";
 
 type Session = {
     user: User
@@ -25,6 +27,7 @@ const AuthContext = createContext<{
 export const AuthProvider = ({children}: PropsWithChildren) => {
     const [session, setSession] = useState<Session | null>()
     const [isLoading, setisLoading] = useState(true)
+    const queryClient = useQueryClient()
 
     useEffect(()=>{
         loadSession()
@@ -57,6 +60,7 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
     const signOut = () => {
         setSession(null)
         saveSession(null)
+        queryClient.clear()
     }
 
     const saveSession = async (value: Session | null) => {
