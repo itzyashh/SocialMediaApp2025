@@ -31,7 +31,7 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
     },[])
 
     const signIn = (user: any) => {
-        axios.defaults.headers.common['Authorization'] = `Bearer ${user.accessToken}`
+        AxiosIntance.defaults.headers.common['Authorization'] = `Bearer ${user.accessToken}`
         const session: Session = {
             user,
             accessToken: user.accessToken
@@ -70,7 +70,7 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
 
     const loadSession = async () => {
         const session = await SecureStore.getItemAsync('session')
-        axios.defaults.headers.common['Authorization'] = session ? `Bearer ${JSON.parse(session).accessToken}` : ''
+        AxiosIntance.defaults.headers.common['Authorization'] = session ? `Bearer ${JSON.parse(session).accessToken}` : ''
         if (session) {
             setSession(JSON.parse(session))
         } else {

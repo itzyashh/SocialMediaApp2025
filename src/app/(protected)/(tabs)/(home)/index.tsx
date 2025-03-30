@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { Button, FlatList, Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, Button, FlatList, Pressable, Text, View } from 'react-native';
 import PostItem from '@/components/PostItem';
 import dummyPosts from '@/dummyData';
 import { useAuth } from '@/providers/AuthProvider';
@@ -8,43 +8,37 @@ import { Link } from 'expo-router';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { getPosts } from '@/sevices/postService';
 
 
 
 export default function App() {
 
   const { signOut, session } = useAuth()
-  console.log('session::: ', session?.accessToken);
-  const [posts, setPosts] = useState<Post[]>([])
+ 
 
-  
-
-  const {data} = useQuery({
-    queryKey: ['test'],
-    queryFn: () => {
-      return 'hello world'
-    }
+  const {data: posts, isLoading, error, refetch, isRefetching} = useQuery({
+    queryKey: ['posts'],
+    queryFn: () => getPosts()
   })
 
-  console.log(data,'data')
 
-  const getPosts = async () => {
-    try {
-      const res = await axios.get('http://localhost:8081/api/posts',{
-
-      });
-      console.log('res::: ', res);
-      
-      setPosts(res.data.posts);
-    } catch (error) {
-      console.error('Error fetching posts:', error);
-      // You could add additional error handling here if needed
-    }
+  if (isLoading) {
+    return (
+      <View className='flex-1 items-center justify-center'>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    )
+  }
+  if (error) {
+    return (
+      <View className='flex-1 items-center justify-center'>
+        <Text>Error: {error.message}</Text>
+      </View>
+    )
   }
 
-  useEffect(()=>{
-    getPosts()
-  },[])
+
 
   return (
     <>
@@ -52,6 +46,8 @@ export default function App() {
         data={posts}
         renderItem={({ item }) => <PostItem post={item} />}
         keyExtractor={item => item.id.toString()}
+        refreshing={isRefetching}
+        onRefresh={refetch}
       />
 
       <Link asChild href="/new">
