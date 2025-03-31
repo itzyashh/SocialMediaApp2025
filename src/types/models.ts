@@ -13,5 +13,5 @@ type Post = {
     likes_count: number
     retweets_count: number
     replies_count: number
-    isLiked?: boolean
+    is_liked?: boolean
 }
