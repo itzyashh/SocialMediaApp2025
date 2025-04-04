@@ -1,25 +1,37 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
-import React, { FC } from 'react'
-import { FontAwesome, FontAwesome5, FontAwesome6 } from '@expo/vector-icons';
+import { Pressable, StyleSheet, Text } from 'react-native';
+import React, { FC } from 'react';
+import { FontAwesome } from '@expo/vector-icons';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 type PostFooterButtonsProps = {
     icon: string
     count: number
     isMarked?: boolean
     onPress?: () => void
+    disabled?: boolean
 }
 
-const PostFooterButtons: FC<PostFooterButtonsProps> = ({ icon, count, isMarked, onPress }) => {
+const PostFooterButtons: FC<PostFooterButtonsProps> = ({ icon, count, isMarked, onPress, disabled }) => {
+
+    const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
+
 
     const exceptions = ['retweet']
 
-    const iconName = exceptions.includes(icon) ? icon : isMarked ? `${icon}` : `${icon}-o`
+    let iconName = icon;
+    if (!exceptions.includes(icon)) {
+        iconName = isMarked ? `${icon}` : `${icon}-o`;
+    }
     return (
-        <Pressable className='flex-row gap-1 items-center' onPress={onPress}>
+        <AnimatedPressable
+        entering={FadeIn}
+        exiting={FadeOut}
+        disabled={disabled}
+        className='flex-row gap-1 items-center' onPress={onPress}>
             {/* @ts-ignore */}
             <FontAwesome name={iconName} size={18} color={ isMarked ? 'crimson' : 'gray'} />
             <Text>{count}</Text>
-        </Pressable>
+        </AnimatedPressable>
     )
 }
 

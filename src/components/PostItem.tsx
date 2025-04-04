@@ -1,4 +1,4 @@
-import { View, Text, Image } from 'react-native'
+import { View, Text, Image, Pressable } from 'react-native'
 import React, { FC, useState } from 'react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -20,18 +20,18 @@ const PostItem: FC<PostItemProps> = ({ post }) => {
 
     const onLikePress = useMutation({
         mutationFn: async () => likePost(post.id),
-        onSuccess: () => queryClient.invalidateQueries({queryKey: ['posts']})
+        onSettled: () => queryClient.invalidateQueries({ queryKey: ['posts'] })
     })
     const onDisLikePress = useMutation({
         mutationFn: async () => dislikePost(post.id),
-        onSuccess: () => queryClient.invalidateQueries({queryKey: ['posts']})
+        onSettled: () => queryClient.invalidateQueries({ queryKey: ['posts'] })
     })
 
     const onHearPress = () => {
-
+        console.log('kii')
         if (onDisLikePress.isPending || onLikePress.isPending) return
 
-        if (post.is_liked){
+        if (post.is_liked) {
             onDisLikePress.mutate()
         } else {
             onLikePress.mutate()
@@ -39,8 +39,8 @@ const PostItem: FC<PostItemProps> = ({ post }) => {
     }
 
     return (
-        <Link href={`/post/${post.id}`}>
-            <View className='flex-row px-4 gap-3 border-b border-gray-200 py-3'>
+        <Link asChild href={`/post/${post.id}`}>
+            <Pressable className='flex-row px-4 gap-3 border-b border-gray-200 py-3'>
                 <Image source={{ uri: post.author.avatar }} className='h-10 w-10 rounded-full mt-1' />
                 <View className='gap-1 flex-1'>
                     <View className='flex-row gap-2'>
@@ -55,10 +55,15 @@ const PostItem: FC<PostItemProps> = ({ post }) => {
                     <View className='flex-row gap-6 mt-2'>
                         <PostFooterButtons icon='comment' count={post.replies_count} />
                         <PostFooterButtons icon='retweet' count={post.retweets_count} />
-                        <PostFooterButtons icon='heart' count={post.likes_count} isMarked={post.is_liked} onPress={onHearPress} />
+                        {onLikePress.isPending
+                            ? <PostFooterButtons disabled icon='heart' count={post.likes_count + 1} isMarked={true} onPress={onHearPress} />
+                            : onDisLikePress.isPending
+                                ? <PostFooterButtons disabled icon='heart' count={post.likes_count - 1} isMarked={false} onPress={onHearPress} />
+                                : <PostFooterButtons icon='heart' count={post.likes_count} isMarked={post.is_liked} onPress={onHearPress} />
+                        }
                     </View>
                 </View>
-            </View>
+            </Pressable>
         </Link>
     )
 }
