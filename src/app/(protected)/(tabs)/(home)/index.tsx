@@ -7,7 +7,7 @@ import { Entypo } from '@expo/vector-icons'
 import { Link } from 'expo-router';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { getPosts } from '@/sevices/postService';
 
 
@@ -17,9 +17,21 @@ export default function App() {
   const { signOut, session } = useAuth()
  
 
-  const {data: posts, isLoading, error, refetch, isRefetching} = useQuery({
+  const {data, isLoading, error, refetch, isRefetching, fetchNextPage, hasNextPage, isFetchingNextPage} = useInfiniteQuery({
     queryKey: ['posts'],
-    queryFn: () => getPosts()
+    queryFn: ({pageParam}) => getPosts(pageParam),
+    initialPageParam: {limit: 15, cursor:undefined},
+    getNextPageParam: (lastPage, pages) => {
+      if (lastPage?.length == 0 ) {
+        return undefined
+      }
+
+      return {
+        limit: 3,
+        cursor: lastPage[lastPage.length - 1].id,
+      }
+
+    }
   })
 
 
@@ -38,6 +50,7 @@ export default function App() {
     )
   }
 
+  const posts = data?.pages.flat() || []
 
 
   return (
@@ -48,6 +61,8 @@ export default function App() {
         keyExtractor={item => item.id.toString()}
         refreshing={isRefetching}
         onRefresh={refetch}
+        onEndReachedThreshold={2}
+        onEndReached={()=>!isFetchingNextPage && hasNextPage &&fetchNextPage()}
       />
 
       <Link asChild href="/new">
